@@ -45,7 +45,7 @@ def load_data():
             }
         )
 
-    # sort by actual date object for consistency
+    # Sort by actual date object for consistency
     def parse_date(d):
         try:
             return datetime.strptime(d, "%m-%d-%Y")
@@ -107,7 +107,7 @@ def prompt_positive_int(prompt_text):
             print("Value must be greater than zero.")
             continue
         return value
-
+# Entrys
 def add_entry(data):
     today = date.today().strftime("%m-%d-%Y")
     entry_date = prompt_date("Date", today)
@@ -147,7 +147,7 @@ def list_entries(data, filter_date=None):
         print(
             f"{entry['id']:>3}  {entry['date']}  {meal}  {entry['calories']:>4}  {category}  {notes}"
         )
-
+# Views a daily summary of entries
 def view_daily_summary(data):
     today = date.today().strftime("%m-%d-%Y")
     target_date = prompt_date("Which day", today)
@@ -155,7 +155,7 @@ def view_daily_summary(data):
     if not entries:
         print(f"No entries for {target_date}.")
         return
-
+# Views all entries
     list_entries(data, filter_date=target_date)
     total = sum(item["calories"] for item in entries)
     print("=" * 70)
@@ -169,7 +169,7 @@ def view_daily_summary(data):
             print(f"You are {-diff} calories over your goal of {goal}.")
         else:
             print("You hit your goal exactly today!")
-
+# Daily goal
 def set_daily_goal(data):
     response = input("Enter new daily calorie goal (blank to clear): ").strip()
     if not response:
@@ -189,7 +189,7 @@ def set_daily_goal(data):
     data["daily_goal"] = goal
     save_data(data)
     print(f"Daily goal set to {goal} calories.")
-
+# Delete entry
 def delete_entry(data):
     if not data["entries"]:
         print("No entries to delete.")
@@ -215,7 +215,7 @@ def delete_entry(data):
             return
 
     print(f"No entry found with ID {target_id}.")
-
+# Daily goal 
 def print_menu(data):
     print("\nCalorie Tracker")
     print("===============")
@@ -231,6 +231,7 @@ def print_menu(data):
     print("5) Delete an entry")
     print("6) Quit")
 
+# Main menu
 def main():
     data = load_data()
     print("Welcome to the calorie tracker. Type the menu number to pick an option.")
