@@ -1,0 +1,22 @@
+{
+  "entries": [
+    {
+      "id": 5,
+      "date": "2025-10-09",
+      "meal": "with sweet and sour sauce",
+      "calories": 900,
+      "category": "lunch",
+      "notes": ""
+    },
+    {
+      "id": 6,
+      "date": "2025-10-09",
+      "meal": "chiptole",
+      "calories": 1600,
+      "category": "dinner",
+      "notes": ""
+    }
+  ],
+  "daily_goal": 3000,
+  "next_id": 7
+}
