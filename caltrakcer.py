@@ -6,7 +6,7 @@ DATA_FILE = Path(__file__).with_name("caltracker_data.json")
 
 
 def load_data():
-    # Load tracker state from disk
+    #Load tracker state from disk
     if not DATA_FILE.exists():
         return {"entries": [], "daily_goal": None, "next_id": 1}
 
@@ -14,14 +14,14 @@ def load_data():
         with DATA_FILE.open("r", encoding="utf-8") as handle:
             raw = json.load(handle)
     except (json.JSONDecodeError, OSError):
-        print("Could not read existing data file; starting with a clean slate.")
+        print("Could not read existing data file")
         return {"entries": [], "daily_goal": None, "next_id": 1}
 
     entries = raw.get("entries", [])
     if not isinstance(entries, list):
         entries = []
 
-    empty_entries = []
+    cleaned_entries = []
     max_id = 0
     for entry in entries:
         try:
@@ -33,7 +33,7 @@ def load_data():
             continue
 
         max_id = max(max_id, entry_id)
-        empty_entries.append(
+        cleaned_entries.append(
             {
                 "id": entry_id,
                 "date": entry_date,
@@ -44,7 +44,7 @@ def load_data():
             }
         )
 
-    empty_entries.sort(key=lambda item: (item["date"], item["id"]))
+    cleaned_entries.sort(key=lambda item: (item["date"], item["id"]))
 
     daily_goal = raw.get("daily_goal")
     try:
@@ -58,7 +58,7 @@ def load_data():
     if not isinstance(next_id, int) or next_id <= max_id:
         next_id = max_id + 1
 
-    return {"entries": empty_entries, "daily_goal": daily_goal, "next_id": next_id}
+    return {"entries": cleaned_entries, "daily_goal": daily_goal, "next_id": next_id}
 
 
 def save_data(data):
@@ -131,13 +131,13 @@ def list_entries(data, filter_date=None):
         return
 
     print("ID   Date        Meal                 Cal  Category        Notes")
-    print("-" * 70)
+    print("-" * 50)
     for entry in entries:
         meal = entry["meal"][:20].ljust(20)
         category = (entry["category"] or "-")[:14].ljust(14)
         notes = (entry["notes"] or "-")
         print(
-            f"{entry['id']:>3}  {entry['date']}  {meal}  {entry['calories']}  {category}  {notes}"
+            f"{entry['id']:>3}  {entry['date']}  {meal}  {entry['calories']:>4}  {category}  {notes}"
         )
 
 
@@ -151,7 +151,7 @@ def view_daily_summary(data):
 
     list_entries(data, filter_date=target_date)
     total = sum(item["calories"] for item in entries)
-    print("-" * 70)
+    print("-" * 50)
     print(f"Total: {total} calories on {target_date}")
     goal = data.get("daily_goal")
     if goal:
@@ -172,8 +172,14 @@ def set_daily_goal(data):
         print("Daily goal cleared.")
         return
 
-    goal = int(response)
-    
+    try:
+        goal = int(response)
+        if goal <= 0:
+            raise ValueError
+    except ValueError:
+        print("Goal must be a positive whole number.")
+        return
+
     data["daily_goal"] = goal
     save_data(data)
     print(f"Daily goal set to {goal} calories.")
@@ -207,14 +213,14 @@ def delete_entry(data):
 
 def print_menu(data):
     print("\nCalorie Tracker")
-    print("==============")
+    print("===============")
     goal = data.get("daily_goal")
     if goal:
         print(f"Daily goal: {goal} calories")
     else:
         print("No daily goal set")
     print("1) Add a meal")
-    print("2) View todays summary")
+    print("2) View a day's summary")
     print("3) List all entries")
     print("4) Set daily goal")
     print("5) Delete an entry")
