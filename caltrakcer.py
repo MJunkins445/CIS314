@@ -4,9 +4,8 @@ from pathlib import Path
 
 DATA_FILE = Path(__file__).with_name("caltracker_data.json")
 
-
 def load_data():
-    #Load tracker state from disk
+    # Load tracker state from disk
     if not DATA_FILE.exists():
         return {"entries": [], "daily_goal": None, "next_id": 1}
 
@@ -17,6 +16,7 @@ def load_data():
         print("Could not read existing data file")
         return {"entries": [], "daily_goal": None, "next_id": 1}
 
+    # sets inputs to ids stored on json
     entries = raw.get("entries", [])
     if not isinstance(entries, list):
         entries = []
@@ -31,6 +31,7 @@ def load_data():
             calories = int(entry.get("calories"))
         except (TypeError, ValueError):
             continue
+        
 
         max_id = max(max_id, entry_id)
         cleaned_entries.append(
@@ -44,8 +45,16 @@ def load_data():
             }
         )
 
-    cleaned_entries.sort(key=lambda item: (item["date"], item["id"]))
+    # sort by actual date object for consistency
+    def parse_date(d):
+        try:
+            return datetime.strptime(d, "%m-%d-%Y")
+        except ValueError:
+            return datetime.min
 
+    cleaned_entries.sort(key=lambda item: (parse_date(item["date"]), item["id"]))
+
+    # Set/Remove daily calorie goal
     daily_goal = raw.get("daily_goal")
     try:
         daily_goal = int(daily_goal) if daily_goal is not None else None
@@ -60,10 +69,11 @@ def load_data():
 
     return {"entries": cleaned_entries, "daily_goal": daily_goal, "next_id": next_id}
 
-
+# Saves input to id number and create new ID number in Json
 def save_data(data):
     payload = {
-        "entries": sorted(data["entries"], key=lambda item: (item["date"], item["id"])),
+        "entries": sorted(data["entries"], key=lambda item: (
+            datetime.strptime(item["date"], "%m-%d-%Y"), item["id"])),
         "daily_goal": data.get("daily_goal"),
         "next_id": data.get("next_id", 1),
     }
@@ -71,7 +81,7 @@ def save_data(data):
         json.dump(payload, handle, indent=2)
         handle.write("\n")
 
-
+# Date format requirements
 def prompt_date(prompt_text, default_value):
     default_hint = f" (default {default_value})" if default_value else ""
     while True:
@@ -79,12 +89,12 @@ def prompt_date(prompt_text, default_value):
         if not response:
             return default_value
         try:
-            parsed = datetime.strptime(response, "%Y-%m-%d").date()
-            return parsed.isoformat()
+            parsed = datetime.strptime(response, "%m-%d-%Y").date()
+            return parsed.strftime("%m-%d-%Y")
         except ValueError:
-            print("Please use the YYYY-MM-DD date format.")
+            print("Please use the MM-DD-YYYY date format.")
 
-
+# Value requirements
 def prompt_positive_int(prompt_text):
     while True:
         response = input(f"{prompt_text}: ").strip()
@@ -98,9 +108,8 @@ def prompt_positive_int(prompt_text):
             continue
         return value
 
-
 def add_entry(data):
-    today = date.today().isoformat()
+    today = date.today().strftime("%m-%d-%Y")
     entry_date = prompt_date("Date", today)
     meal = input("Meal description: ").strip() or "Meal"
     calories = prompt_positive_int("Calories")
@@ -120,7 +129,6 @@ def add_entry(data):
     save_data(data)
     print(f"Added {calories} calories for {meal} on {entry_date}.")
 
-
 def list_entries(data, filter_date=None):
     entries = data["entries"]
     if filter_date:
@@ -131,7 +139,7 @@ def list_entries(data, filter_date=None):
         return
 
     print("ID   Date        Meal                 Cal  Category        Notes")
-    print("-" * 50)
+    print("=" * 70)
     for entry in entries:
         meal = entry["meal"][:20].ljust(20)
         category = (entry["category"] or "-")[:14].ljust(14)
@@ -140,9 +148,8 @@ def list_entries(data, filter_date=None):
             f"{entry['id']:>3}  {entry['date']}  {meal}  {entry['calories']:>4}  {category}  {notes}"
         )
 
-
 def view_daily_summary(data):
-    today = date.today().isoformat()
+    today = date.today().strftime("%m-%d-%Y")
     target_date = prompt_date("Which day", today)
     entries = [item for item in data["entries"] if item["date"] == target_date]
     if not entries:
@@ -151,7 +158,7 @@ def view_daily_summary(data):
 
     list_entries(data, filter_date=target_date)
     total = sum(item["calories"] for item in entries)
-    print("-" * 50)
+    print("=" * 70)
     print(f"Total: {total} calories on {target_date}")
     goal = data.get("daily_goal")
     if goal:
@@ -162,7 +169,6 @@ def view_daily_summary(data):
             print(f"You are {-diff} calories over your goal of {goal}.")
         else:
             print("You hit your goal exactly today!")
-
 
 def set_daily_goal(data):
     response = input("Enter new daily calorie goal (blank to clear): ").strip()
@@ -183,7 +189,6 @@ def set_daily_goal(data):
     data["daily_goal"] = goal
     save_data(data)
     print(f"Daily goal set to {goal} calories.")
-
 
 def delete_entry(data):
     if not data["entries"]:
@@ -251,7 +256,6 @@ def main():
                 print("Please choose a valid option from the menu.")
     except KeyboardInterrupt:
         print("\nExiting... Goodbye!")
-
 
 if __name__ == "__main__":
     main()
