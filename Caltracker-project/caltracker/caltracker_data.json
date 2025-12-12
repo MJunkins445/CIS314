@@ -1,0 +1,78 @@
+{
+  "entries": [
+    {
+      "id": 13,
+      "date": "2025-09-25",
+      "meal": "Mcdonalds",
+      "calories": 3210,
+      "category": "lunch",
+      "notes": "Chicken strips with a large fry"
+    },
+    {
+      "id": 7,
+      "date": "2025-10-09",
+      "meal": "Meal",
+      "calories": 500,
+      "category": "",
+      "notes": "yum"
+    },
+    {
+      "id": 8,
+      "date": "2025-10-09",
+      "meal": "bread",
+      "calories": 250,
+      "category": "",
+      "notes": ""
+    },
+    {
+      "id": 9,
+      "date": "2025-10-09",
+      "meal": "chip",
+      "calories": 15,
+      "category": "",
+      "notes": ""
+    },
+    {
+      "id": 10,
+      "date": "2025-10-09",
+      "meal": "salsa",
+      "calories": 164,
+      "category": "",
+      "notes": ""
+    },
+    {
+      "id": 14,
+      "date": "2025-12-10",
+      "meal": "Steak",
+      "calories": 250,
+      "category": "dinner",
+      "notes": "had so A1 sauce too"
+    },
+    {
+      "id": 16,
+      "date": "2025-12-11",
+      "meal": "Steak",
+      "calories": 556,
+      "category": "",
+      "notes": "Steak \u2022 556 kcal | P 0.0g | C 111.0g | F 0.0g | Na 0 mg"
+    },
+    {
+      "id": 17,
+      "date": "2025-12-11",
+      "meal": "Chicken",
+      "calories": 107,
+      "category": "",
+      "notes": "Chicken \u2022 107 kcal | P 21.4g | C 0.0g | F 1.8g | Na 179 mg"
+    },
+    {
+      "id": 18,
+      "date": "2025-12-11",
+      "meal": "Lay'S, Potato Chips",
+      "calories": 571,
+      "category": "",
+      "notes": "Lay'S, Potato Chips \u2022 571 kcal | P 7.1g | C 53.6g | F 35.7g | Na 500 mg"
+    }
+  ],
+  "daily_goal": 2500,
+  "next_id": 19
+}

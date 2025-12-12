@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "caltracker"
+version = "1.0.0"
+description = "A simple calorie tracker with a GUI."
+requires-python = ">=3.10"
+dependencies = ["requests>=2.31"]
+license = { file = "LICENSE" }
+authors = [
+  { name = "Matthew Junkins", email = "MJUNKI01@rams.shepherd.edu" }
+]
+
+keywords = ["calories", "nutrition", "tracker", "GUI"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+
+[project.scripts]
+caltracker = "caltracker.caltracker:gui_main"
+caltracker-ui = "caltracker.caltracker:gui_main"
+
+[tool.setuptools]
+packages = ["caltracker"]
+
+[tool.setuptools.package-data]
+caltracker = ["caltracker_data.json"]

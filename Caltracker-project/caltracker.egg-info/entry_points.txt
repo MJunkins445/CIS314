@@ -1,0 +1,2 @@
+[console_scripts]
+caltracker = caltracker.caltracker:main
