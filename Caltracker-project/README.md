@@ -10,5 +10,7 @@ It lets you:
 - List and delete entries  
 
 GUI:
-- Launch the Tkinter dashboard with `python -m caltracker.caltracker` (or `caltracker` / `caltracker-ui` if installed as scripts).
+- Launch the Tkinter dashboard with `python -m caltracker.caltracker` (or `caltracker` / `caltracker-ui` if installed as scripts). WHEN USING VERSION WITH API USE $env:USDA_API_KEY = "tfsDLA94751nrGNQHSiiyVeBNwMRG8rxEgOTqD72"
+python -m caltracker.caltracker
 - Nutrition lookup (USDA FoodData Central): set `USDA_API_KEY` env var, then use the "Fetch macros" control to autofill calories and see macros (carbs, protein, fat, sodium, etc.).
+
